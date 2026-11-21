@@ -13,7 +13,7 @@ TOPIC = os.environ["NTFY_TOPIC"]          # 추측하기 어려운 긴 문자열
 SEEN_FILE = Path("seen.json")
 
 # 공고 상세 링크 패턴 (브라우저에서 실제 링크를 보고 필요하면 수정)
-LINK_RE = re.compile(r"/contract/\d+")
+LINK_RE = re.compile(r"^/recruits/\d+$")
 
 DISTRICTS = ["경산시", "고령군", "구미시", "군위군", "김천시", "성주군",
              "영천시", "의성군", "청도군", "칠곡군"]
@@ -38,15 +38,15 @@ def fetch_items():
 
     items = {}
     for a in soup.find_all("a", href=True):
-        m = LINK_RE.search(a["href"])
-        if not m:
+        path = a["href"].split("?")[0]
+        if not LINK_RE.match(path):
             continue
-        link = urljoin(BASE, a["href"].split("?")[0])
-        title = " ".join(a.get_text(" ", strip=True).split())
+        link = urljoin(BASE, path)
+        h2 = a.find("h2")
+        title = " ".join((h2 or a).get_text(" ", strip=True).split())
         if link not in items or len(title) > len(items[link]):
             items[link] = title or link
     return items
-
 
 def notify(title, link):
     requests.post(
