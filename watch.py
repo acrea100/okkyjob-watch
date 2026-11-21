@@ -46,6 +46,12 @@ def fetch_items(url):
         timeout=30,
     )
     r.raise_for_status()
+
+    print("상태코드:", r.status_code, "| 길이:", len(r.text))
+    print("title:", re.findall(r"<title>(.*?)</title>", r.text, re.S)[:1])
+    print("'/recruits/' 등장 횟수:", r.text.count("/recruits/"))
+    print("앞부분:", r.text[:500].replace("\n", " "))
+
     soup = BeautifulSoup(r.text, "html.parser")
 
     items = {}
