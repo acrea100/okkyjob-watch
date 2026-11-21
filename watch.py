@@ -37,6 +37,7 @@ def build_url(cfg):
     query = f"?{urlencode(params)}" if params else ""
     return f"{BASE}/contract{query}"
 
+EMPTY_MARK = "검색결과가존재하지않습니다"   # 공백/따옴표를 뺀 형태
 
 def fetch_items(url):
     r = requests.get(
@@ -57,7 +58,10 @@ def fetch_items(url):
         title = " ".join((h2 or a).get_text(" ", strip=True).split())
         if link not in items or len(title) > len(items[link]):
             items[link] = title or link
-    return items, len(r.text)
+
+    plain = re.sub(r'[\s"“”]', "", soup.get_text())
+    is_empty_page = EMPTY_MARK in plain
+    return items, is_empty_page
 
 def load_state():
     """저장된 (검색 URL, 본 공고 링크 집합)을 돌려준다."""
@@ -83,20 +87,20 @@ def notify(title, link):
     )
 
 
-MIN_HTML_LEN = 3000   # 이보다 짧으면 정상 페이지가 아니라고 판단
-
 def main():
     cfg = load_config()
     url = build_url(cfg)
     print("검색 URL:", url)
 
-    items, html_len = fetch_items(url)
+    items, is_empty_page = fetch_items(url)
 
     if not items:
-        if html_len < MIN_HTML_LEN:
-            print(f"응답이 비정상적으로 짧습니다({html_len}자). 차단/점검 가능성.")
+        if is_empty_page:
+            print("현재 조건에 맞는 공고가 없습니다.")
+        else:
+            print("공고도, '검색결과가 존재하지 않습니다' 문구도 없습니다. "
+                  "사이트 구조 변경이나 차단을 의심하세요.")
             sys.exit(1)
-        print("현재 조건에 맞는 공고가 없습니다.")
 
     saved_url, seen = load_state()
 
