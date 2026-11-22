@@ -37,37 +37,75 @@ def build_url(cfg):
     query = f"?{urlencode(params)}" if params else ""
     return f"{BASE}/contract{query}"
 
-EMPTY_MARK = "검색결과가존재하지않습니다"   # 공백/따옴표를 뺀 형태
+def find_content(node):
+    """파싱된 JSON 안에서 result.content(공고 배열)를 재귀적으로 찾는다."""
+    if isinstance(node, dict):
+        res = node.get("result")
+        if isinstance(res, dict) and isinstance(res.get("content"), list):
+            return res["content"]
+        for v in node.values():
+            found = find_content(v)
+            if found is not None:
+                return found
+    elif isinstance(node, list):
+        for v in node:
+            found = find_content(v)
+            if found is not None:
+                return found
+    return None
+
+
+def pay_text(rr):
+    lo, hi = rr.get("minPay"), rr.get("maxPay")
+    if lo is None and hi is None:
+        return ""
+    if lo == hi:
+        return f"{lo}만원"
+    return f"{lo}~{hi}만원"
+
 
 def fetch_items(url):
     r = requests.get(
-        url,
-        headers={"User-Agent": "Mozilla/5.0 (compatible; okky-watch/1.0)"},
+        url + ("&" if "?" in url else "?") + "_rsc=okkywatch",
+        headers={
+            "User-Agent": "Mozilla/5.0 (compatible; okky-watch/1.0)",
+            "RSC": "1",
+            "Accept": "*/*",
+            "Next-Url": "/contract",
+        },
         timeout=30,
     )
     r.raise_for_status()
+    text = r.content.decode("utf-8", errors="replace")   # 인코딩 깨짐 방지
 
-    print("상태코드:", r.status_code, "| 길이:", len(r.text))
-    print("title:", re.findall(r"<title>(.*?)</title>", r.text, re.S)[:1])
-    print("'/recruits/' 등장 횟수:", r.text.count("/recruits/"))
-    print("앞부분:", r.text[:500].replace("\n", " "))
+    content = None
+    for line in text.splitlines():
+        if '"result"' not in line:
+            continue
+        _, _, body = line.partition(":")
+        try:
+            content = find_content(json.loads(body))
+        except ValueError:
+            continue
+        if content is not None:
+            break
 
-    soup = BeautifulSoup(r.text, "html.parser")
+    if content is None:
+        return {}, False          # 응답 구조를 못 찾음 → 구조 변경/차단 의심
 
     items = {}
-    for a in soup.find_all("a", href=True):
-        path = a["href"].split("?")[0]
-        if not LINK_RE.match(path):
-            continue
-        link = urljoin(BASE, path)
-        h2 = a.find("h2")
-        title = " ".join((h2 or a).get_text(" ", strip=True).split())
-        if link not in items or len(title) > len(items[link]):
-            items[link] = title or link
-
-    plain = re.sub(r'[\s"“”]', "", soup.get_text())
-    is_empty_page = EMPTY_MARK in plain
-    return items, is_empty_page
+    for job in content:
+        link = f"{BASE}/recruits/{job['id']}"
+        rr = job.get("recruitResponse") or {}
+        company = (rr.get("company") or {}).get("name", "")
+        place = " ".join(x for x in [rr.get("city"), rr.get("district")] if x)
+        info = " · ".join(
+            x for x in [company, place, pay_text(rr),
+                        f"마감 {rr['deadline']}" if rr.get("deadline") else ""]
+            if x
+        )
+        items[link] = f"{job.get('title', '')}\n{info}".strip()
+    return items, True            # True = 구조 확인됨 (0건이어도 정상)
 
 def load_state():
     """저장된 (검색 URL, 본 공고 링크 집합)을 돌려준다."""
