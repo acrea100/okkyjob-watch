@@ -1,6 +1,26 @@
-
 {
-  "locations": [
-    { "city": "서울" }
-  ]
+  "okky": {
+    "enabled": true,
+    "locations": [
+      { "city": "서울" }
+    ]
+  },
+  "jobkorea": {
+    "enabled": true,
+    "payload": {
+      "isDefault": "true",
+      "condition[duty]": "1000229,1000230,1000231,1000232,1000239",
+      "condition[local]": "F000",
+      "condition[jobtype]": "6,2",
+      "condition[menucode]": "",
+      "page": "1",
+      "direct": "0",
+      "order": "2",
+      "pagesize": "40",
+      "tabindex": "0",
+      "onePick": "0",
+      "confirm": "0",
+      "profile": "0"
+    }
+  }
 }

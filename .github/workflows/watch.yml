@@ -2,7 +2,7 @@ name: okky-watch
 
 on:
   schedule:
-    - cron: "*/10 * * * *"     # 10분마다 (실제로는 몇 분 지연될 수 있음)
+    - cron: "43 * * * *"     # 매시간 43분 (UTC 기준, 한국 시간 KST는 43분 동일)
   workflow_dispatch:            # 수동 실행 버튼
 
 permissions:
@@ -24,5 +24,5 @@ jobs:
         run: |
           git config user.name "bot"
           git config user.email "bot@users.noreply.github.com"
-          git add seen.json
+          git add seen
           git diff --cached --quiet || (git commit -m "update seen" && git push)
