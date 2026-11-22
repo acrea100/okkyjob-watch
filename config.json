@@ -2,7 +2,9 @@
   "okky": {
     "enabled": true,
     "locations": [
-      { "city": "서울" }
+      { "city": "대구" },
+      { "city": "경북", "districts": ["경산시", "고령군", "구미시", "김천시", "성주군",
+               "영천시", "의성군", "청도군", "칠곡군"] }
     ]
   },
   "jobkorea": {
