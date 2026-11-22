@@ -1,23 +1,4 @@
 {
-  "sig": "https://jobs.okky.kr/contract?location%5B0%5D.city=%EC%84%9C%EC%9A%B8",
-  "seen": [
-    "https://jobs.okky.kr/recruits/1567392",
-    "https://jobs.okky.kr/recruits/1567393",
-    "https://jobs.okky.kr/recruits/1567396",
-    "https://jobs.okky.kr/recruits/1567398",
-    "https://jobs.okky.kr/recruits/1567404",
-    "https://jobs.okky.kr/recruits/1567407",
-    "https://jobs.okky.kr/recruits/1567423",
-    "https://jobs.okky.kr/recruits/1567433",
-    "https://jobs.okky.kr/recruits/1567455",
-    "https://jobs.okky.kr/recruits/1567458",
-    "https://jobs.okky.kr/recruits/1567473",
-    "https://jobs.okky.kr/recruits/1567478",
-    "https://jobs.okky.kr/recruits/1567502",
-    "https://jobs.okky.kr/recruits/1567503",
-    "https://jobs.okky.kr/recruits/1567505",
-    "https://jobs.okky.kr/recruits/1567508",
-    "https://jobs.okky.kr/recruits/1567520",
-    "https://jobs.okky.kr/recruits/1567533"
-  ]
+  "sig": "https://jobs.okky.kr/contract?location%5B0%5D.city=%EB%8C%80%EA%B5%AC&location%5B1%5D.city=%EA%B2%BD%EB%B6%81&location%5B1%5D.district=%EA%B2%BD%EC%82%B0%EC%8B%9C&location%5B2%5D.city=%EA%B2%BD%EB%B6%81&location%5B2%5D.district=%EA%B3%A0%EB%A0%B9%EA%B5%B0&location%5B3%5D.city=%EA%B2%BD%EB%B6%81&location%5B3%5D.district=%EA%B5%AC%EB%AF%B8%EC%8B%9C&location%5B4%5D.city=%EA%B2%BD%EB%B6%81&location%5B4%5D.district=%EA%B9%80%EC%B2%9C%EC%8B%9C&location%5B5%5D.city=%EA%B2%BD%EB%B6%81&location%5B5%5D.district=%EC%84%B1%EC%A3%BC%EA%B5%B0&location%5B6%5D.city=%EA%B2%BD%EB%B6%81&location%5B6%5D.district=%EC%98%81%EC%B2%9C%EC%8B%9C&location%5B7%5D.city=%EA%B2%BD%EB%B6%81&location%5B7%5D.district=%EC%9D%98%EC%84%B1%EA%B5%B0&location%5B8%5D.city=%EA%B2%BD%EB%B6%81&location%5B8%5D.district=%EC%B2%AD%EB%8F%84%EA%B5%B0&location%5B9%5D.city=%EA%B2%BD%EB%B6%81&location%5B9%5D.district=%EC%B9%A0%EA%B3%A1%EA%B5%B0",
+  "seen": []
 }
