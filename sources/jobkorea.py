@@ -31,7 +31,7 @@ def fetch(cfg):
             "X-Requested-With": "XMLHttpRequest",
             "Referer": BASE + "/recruit/joblist",
         },
-        timeout=30,
+        timeout=(10, 30),
     )
     r.raise_for_status()
     soup = BeautifulSoup(r.text, "html.parser")

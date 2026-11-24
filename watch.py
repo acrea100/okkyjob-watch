@@ -2,6 +2,7 @@ import importlib
 import json
 import os
 import sys
+from time import time
 import traceback
 from pathlib import Path
 
@@ -53,10 +54,19 @@ def notify(label, title, link):
         timeout=30,
     )
 
-
+def fetch_with_retry(mod, scfg, tries=3):
+    for i in range(1, tries + 1):
+        try:
+            return mod.fetch(scfg)
+        except (requests.ConnectionError, requests.Timeout) as e:
+            print(f"  접속 실패({i}/{tries}): {e.__class__.__name__}")
+            if i == tries:
+                raise
+            time.sleep(5 * i)
+            
 def run_source(name, label, scfg):
     mod = importlib.import_module(f"sources.{name}")
-    items, ok, sig = mod.fetch(scfg)
+    items, ok, sig = fetch_with_retry(mod, scfg)
     print(f"[{label}] 검색조건: {sig} | 수집 {len(items)}건")
 
     if not items and not ok:
